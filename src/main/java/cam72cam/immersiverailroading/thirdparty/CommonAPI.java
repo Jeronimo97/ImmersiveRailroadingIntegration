@@ -237,6 +237,12 @@ public class CommonAPI {
         }
     }
     
+    public void setDynamicBrake(double brake) {
+        if (stock instanceof LocomotiveDiesel) {
+            ((LocomotiveDiesel) stock).setDynamicBrake(normalize(brake));
+        }
+    }
+    
     public void setSanding(boolean sand) {
         if (stock instanceof Locomotive) {
             ((Locomotive)stock).setSanding(sand);
