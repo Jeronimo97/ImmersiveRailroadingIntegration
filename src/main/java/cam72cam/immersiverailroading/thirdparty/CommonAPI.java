@@ -146,7 +146,7 @@ public class CommonAPI {
         if (!(stock instanceof EntityCoupleableRollingStock)) {
             return null;
         }
-        EntityCoupleableRollingStock stock = (EntityCoupleableRollingStock) stock;
+        EntityCoupleableRollingStock stock = (EntityCoupleableRollingStock) this.stock;
 
         int traction = 0;
         TrainIterator acc = new TrainIterator();
