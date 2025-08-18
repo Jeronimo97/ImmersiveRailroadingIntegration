@@ -8,11 +8,10 @@ import mods.railcraft.common.items.RailcraftItems;
 
 public class Railcraft {
     public static void init() {
-        IRFuzzy.IR_TIE.add(new ItemStack(new net.minecraft.item.ItemStack(
-                RailcraftBlocks.GENERIC.item(), 1, EnumGeneric.BLOCK_CREOSOTE.ordinal()
-        )));
-        IRFuzzy.IR_TIE.add(new ItemStack(new net.minecraft.item.ItemStack(
-                RailcraftItems.TIE.item(), 1
-        )));
+        IRFuzzy.IR_TIE
+                .add(new ItemStack(new net.minecraft.item.ItemStack(RailcraftBlocks.GENERIC.item(),
+                        1, EnumGeneric.BLOCK_CREOSOTE.ordinal())));
+        IRFuzzy.IR_TIE
+                .add(new ItemStack(new net.minecraft.item.ItemStack(RailcraftItems.TIE.item(), 1)));
     }
 }

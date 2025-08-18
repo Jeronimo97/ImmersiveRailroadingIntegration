@@ -233,6 +233,33 @@ public class AugmentDriver implements SidedBlock {
 			}
 			return null;
 		}
+		
+        @Callback(doc = "function(double) -- sets the hand brake")
+        public Object[] setHandBrake(Context context, Arguments arguments) {
+            CommonAPI api = CommonAPI.create(world, pos, Locomotive.class);
+            if (api != null) {
+                api.setHandBrake(arguments.checkDouble(0));
+            }
+            return null;
+        }
+        
+        @Callback(doc = "function(double) -- sets the dynamic brake")
+        public Object[] setDynamicBrake(Context context, Arguments arguments) {
+            CommonAPI api = CommonAPI.create(world, pos, Locomotive.class);
+            if (api != null) {
+                api.setDynamicBrake(arguments.checkDouble(0));
+            }
+            return null;
+        }
+        
+        @Callback(doc = "function(boolean) -- set sanding")
+        public Object[] setSanding(Context context, Arguments arguments) {
+            CommonAPI api = CommonAPI.create(world, pos, Locomotive.class);
+            if (api != null) {
+                api.setSanding(arguments.checkBoolean(0));
+            }
+            return null;
+        }
 
 		@Callback(doc = "function() -- fires the locomotive horn")
 		public Object[] horn(Context context, Arguments arguments) throws Exception {
