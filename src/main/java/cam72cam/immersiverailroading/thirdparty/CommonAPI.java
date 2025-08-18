@@ -267,7 +267,7 @@ public class CommonAPI {
         }
     }
 
-    public Vec3d getPosition() {
+    public Vector3d getPosition() {
         return stock.getPosition().internal();
     }
 
