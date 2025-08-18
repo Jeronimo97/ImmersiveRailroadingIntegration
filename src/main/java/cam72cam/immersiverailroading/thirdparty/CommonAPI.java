@@ -71,7 +71,7 @@ public class CommonAPI {
             }
 
             if (stock instanceof EntityMoveableRollingStock) {
-                info.put("independent_brake", ((EntityMoveableRollingStock) stock).getIndependentBrake());
+                info.put("hand_brake", ((EntityMoveableRollingStock) stock).getHandBrake());
             }
 
             if (stock instanceof Locomotive) {
@@ -82,17 +82,22 @@ public class CommonAPI {
                 info.put("max_speed", locoDef.getMaxSpeed(loco.gauge).metric());
                 info.put("brake", loco.getTrainBrake());
                 info.put("train_brake", loco.getTrainBrake());
+                info.put("independent_brake", loco.getIndependentBrake());
                 info.put("throttle", loco.getThrottle());
                 info.put("reverser", loco.getReverser());
+                info.put("sanding", loco.isSanding());
 
                 if (loco instanceof LocomotiveSteam) {
                     LocomotiveSteam steam = (LocomotiveSteam) loco;
                     info.put("pressure", steam.getBoilerPressure());
                     info.put("temperature", steam.getBoilerTemperature());
+                    info.put("chest_pressure", steam.getChestPressurePercent());
                 }
                 if (loco instanceof LocomotiveDiesel) {
-                    info.put("ignition", ((LocomotiveDiesel) loco).isTurnedOn());
-                    info.put("temperature", ((LocomotiveDiesel) loco).getEngineTemperature());
+                    LocomotiveDiesel diesel = (LocomotiveDiesel) loco;
+                    info.put("ignition", diesel.isTurnedOn());
+                    info.put("temperature", diesel.getEngineTemperature());
+                    info.put("dynamic_brake", diesel.getDynamicBrake());
                 }
             }
 
@@ -221,8 +226,26 @@ public class CommonAPI {
         }
     }
     public void setIndependentBrake(double brake) {
-        if (stock instanceof EntityMoveableRollingStock) {
+        if (stock instanceof Locomotive) {
             ((Locomotive)stock).setIndependentBrake(normalize(brake));
+        }
+    }
+    
+    public void setHandBrake(double brake) {
+        if (stock instanceof EntityMoveableRollingStock) {
+            ((EntityMoveableRollingStock) stock).setHandBrake(normalize(brake));
+        }
+    }
+    
+    public void setDynamicBrake(double brake) {
+        if (stock instanceof LocomotiveDiesel) {
+            ((LocomotiveDiesel) stock).setDynamicBrake(normalize(brake));
+        }
+    }
+    
+    public void setSanding(boolean sand) {
+        if (stock instanceof Locomotive) {
+            ((Locomotive)stock).setSanding(sand);
         }
     }
 
