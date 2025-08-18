@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class CommonAPI {
-    private final Supplier<EntityRollingStock> stockSupplier;
+    private final EntityRollingStock stock;
 
     public static CommonAPI create(Level world, BlockPos pos) {
         return create(world, pos, EntityRollingStock.class);
@@ -32,19 +32,18 @@ public class CommonAPI {
     }
 
     public CommonAPI(TileRailBase te, Class<? extends EntityRollingStock> stockClass) {
-        stockSupplier = () -> te.getStockNearBy(stockClass);
+        stock = te.getStockNearBy(stockClass);
     }
 
     public CommonAPI(EntityRollingStock stock) {
-        stockSupplier = () -> stock;
+        this.stock = stock;
     }
 
     public EntityRollingStock stock() {
-        return stockSupplier.get();
+        return stock;
     }
 
     public FluidStack getFluid() {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof FreightTank) {
             FreightTank tank = (FreightTank) stock;
             return tank.getLiquid() != null ? new FluidStack(tank.getLiquid().internal.get(0), tank.getLiquidAmount()) : null;
@@ -53,7 +52,6 @@ public class CommonAPI {
     }
 
     public Map<String, Object> info() {
-        EntityRollingStock stock = this.stock();
         if (stock != null) {
             Map<String, Object> info = new HashMap<>();
             EntityRollingStockDefinition def = stock.getDefinition();
@@ -145,10 +143,10 @@ public class CommonAPI {
     }
 
     public Map<String, Object> consist(boolean supportsList) {
-        if (!(stock() instanceof EntityCoupleableRollingStock)) {
+        if (!stock instanceof EntityCoupleableRollingStock) {
             return null;
         }
-        EntityCoupleableRollingStock stock = (EntityCoupleableRollingStock) stock();
+        EntityCoupleableRollingStock stock = (EntityCoupleableRollingStock) stock;
 
         int traction = 0;
         TrainIterator acc = new TrainIterator();
@@ -187,7 +185,6 @@ public class CommonAPI {
     }
 
     public String getTag() {
-        EntityRollingStock stock = this.stock();
     	TagEvent.GetTagEvent tagEvent = new TagEvent.GetTagEvent(stock.getUUID());
     	MinecraftForge.EVENT_BUS.post(tagEvent);
     	
@@ -200,7 +197,6 @@ public class CommonAPI {
     }
 
     public void setTag(String tag) {
-        EntityRollingStock stock = this.stock();
     	TagEvent.SetTagEvent tagEvent = new TagEvent.SetTagEvent(stock.getUUID(), tag);
     	MinecraftForge.EVENT_BUS.post(tagEvent);
     	
@@ -221,19 +217,16 @@ public class CommonAPI {
     }
 
     public void setThrottle(double throttle) {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof Locomotive) {
             ((Locomotive)stock).setThrottle(normalize(throttle));
         }
     }
     public void setReverser(double reverser) {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof Locomotive) {
             ((Locomotive)stock).setReverser(normalize(reverser));
         }
     }
     public void setTrainBrake(double brake) {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof Locomotive) {
             ((Locomotive)stock).setTrainBrake(normalize(brake));
         }
@@ -263,31 +256,26 @@ public class CommonAPI {
     }
 
     public void setHorn(int horn) {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof Locomotive) {
             ((Locomotive)stock).setHorn(horn, null);
         }
     }
 
     public void setBell(int bell) {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof Locomotive) {
             ((Locomotive)stock).setBell(bell);
         }
     }
 
-    public Vec3 getPosition() {
-        EntityRollingStock stock = this.stock();
+    public Vec3d getPosition() {
         return stock.getPosition().internal();
     }
 
     public UUID getUniqueID() {
-        EntityRollingStock stock = this.stock();
         return stock.getUUID();
     }
 
     public Boolean getIgnition() {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof LocomotiveDiesel) {
             return ((LocomotiveDiesel)stock).isTurnedOn();
         }
@@ -295,7 +283,6 @@ public class CommonAPI {
     }
 
     public void setIgnition(boolean on) {
-        EntityRollingStock stock = this.stock();
         if (stock instanceof LocomotiveDiesel) {
             ((LocomotiveDiesel)stock).setTurnedOn(on);
         }
