@@ -222,6 +222,18 @@ public class ComputerCraft {
                 api.setIndependentBrake(getDoubleParam(params, 0, "brake"));
                 return null;
             });
+            methods.put("setHandBrake", (CommonAPI api, Object[] params) -> {
+                api.setHandBrake(getDoubleParam(params, 0, "brake"));
+                return null;
+            });
+            methods.put("setDynamicBrake", (CommonAPI api, Object[] params) -> {
+                api.setDynamicBrake(getDoubleParam(params, 0, "brake"));
+                return null;
+            });
+            methods.put("setSanding", (CommonAPI api, Object[] params) -> {
+                api.setSanding(getBooleanParam(params, 0, "brake"));
+                return null;
+            });
             methods.put("setHorn", (CommonAPI api, Object[] params) -> {
                 api.setHorn((int) getDoubleParam(params, 0, "horn"));
                 return null;
