@@ -143,7 +143,7 @@ public class CommonAPI {
     }
 
     public Map<String, Object> consist(boolean supportsList) {
-        if (!stock instanceof EntityCoupleableRollingStock) {
+        if (!(stock instanceof EntityCoupleableRollingStock)) {
             return null;
         }
         EntityCoupleableRollingStock stock = (EntityCoupleableRollingStock) stock;
