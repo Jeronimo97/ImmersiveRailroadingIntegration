@@ -65,17 +65,21 @@ public class ComputerCraft {
         }
 
         public static void attach(BasePeripheral p, IComputerAccess c) {
-            if (!tickable.containsKey(p)) {
-                tickable.put(p, new HashSet<>());
+            synchronized (tickable) {
+                if (!tickable.containsKey(p)) {
+                    tickable.put(p, new HashSet<>());
+                }
+                tickable.get(p).add(c);
             }
-            tickable.get(p).add(c);
         }
 
         public static void detach(BasePeripheral p, IComputerAccess c) {
-            if (tickable.containsKey(p)) {
-                tickable.get(p).remove(c);
-                if (tickable.get(p).isEmpty()) {
-                    tickable.remove(p);
+            synchronized (tickable) {
+                if (tickable.containsKey(p)) {
+                    tickable.get(p).remove(c);
+                    if (tickable.get(p).isEmpty()) {
+                        tickable.remove(p);
+                    }
                 }
             }
         }
@@ -116,18 +120,12 @@ public class ComputerCraft {
 
         @Override
         public void attach(@Nonnull IComputerAccess computer) {
-            MinecraftServer server = this.world.getMinecraftServer();
-            if (server != null) {
-                server.addScheduledTask(() -> TickHandler.attach(this, computer));
-            }
+            TickHandler.attach(this, computer);
         }
 
         @Override
         public void detach(@Nonnull IComputerAccess computer) {
-            MinecraftServer server = this.world.getMinecraftServer();
-            if (server != null) {
-                server.addScheduledTask(() -> TickHandler.detach(this, computer));
-            }
+            TickHandler.detach(this, computer);
         }
 
 
