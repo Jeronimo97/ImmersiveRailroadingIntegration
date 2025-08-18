@@ -115,12 +115,18 @@ public class ComputerCraft {
 
         @Override
         public void attach(@Nonnull IComputerAccess computer) {
-            TickHandler.attach(this, computer);
+            MinecraftServer server = this.world.getMinecraftServer();
+            if (server != null) {
+                server.addScheduledTask(() -> TickHandler.attach(this, computer));
+            }
         }
 
         @Override
         public void detach(@Nonnull IComputerAccess computer) {
-            TickHandler.detach(this, computer);
+            MinecraftServer server = this.world.getMinecraftServer();
+            if (server != null) {
+                server.addScheduledTask(() -> TickHandler.detach(this, computer));
+            }
         }
 
 
@@ -219,6 +225,18 @@ public class ComputerCraft {
             });
             methods.put("setIndependentBrake", (CommonAPI api, Object[] params) -> {
                 api.setIndependentBrake(getDoubleParam(params, 0, "brake"));
+                return null;
+            });
+            methods.put("setHandBrake", (CommonAPI api, Object[] params) -> {
+                api.setHandBrake(getDoubleParam(params, 0, "brake"));
+                return null;
+            });
+            methods.put("setDynamicBrake", (CommonAPI api, Object[] params) -> {
+                api.setDynamicBrake(getDoubleParam(params, 0, "brake"));
+                return null;
+            });
+            methods.put("setSanding", (CommonAPI api, Object[] params) -> {
+                api.setSanding(getBooleanParam(params, 0, "brake"));
                 return null;
             });
             methods.put("setHorn", (CommonAPI api, Object[] params) -> {
