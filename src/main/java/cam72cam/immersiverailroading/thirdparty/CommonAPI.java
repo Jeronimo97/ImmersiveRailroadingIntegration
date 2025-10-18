@@ -71,7 +71,9 @@ public class CommonAPI {
             }
 
             if (stock instanceof EntityMoveableRollingStock) {
-                info.put("hand_brake", ((EntityMoveableRollingStock) stock).getHandBrake());
+                EntityMoveableRollingStock move = (EntityMoveableRollingStock) stock;
+                info.put("independent_brake", move.getIndependentBrake());
+                info.put("hand_brake", move.getHandBrake());
             }
 
             if (stock instanceof Locomotive) {
@@ -82,7 +84,6 @@ public class CommonAPI {
                 info.put("max_speed", locoDef.getMaxSpeed(loco.gauge).metric());
                 info.put("brake", loco.getTrainBrake());
                 info.put("train_brake", loco.getTrainBrake());
-                info.put("independent_brake", loco.getIndependentBrake());
                 info.put("throttle", loco.getThrottle());
                 info.put("reverser", loco.getReverser());
                 info.put("sanding", loco.isSanding());
