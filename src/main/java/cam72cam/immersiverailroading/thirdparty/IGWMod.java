@@ -7,7 +7,6 @@ import igwmod.gui.GuiWiki;
 import igwmod.gui.tabs.BaseWikiTab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 public class IGWMod {
