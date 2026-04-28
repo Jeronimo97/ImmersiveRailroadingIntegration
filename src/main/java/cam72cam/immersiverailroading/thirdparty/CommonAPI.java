@@ -88,11 +88,11 @@ public class CommonAPI {
                 info.put("horsepower", locoDef.getHorsePower(loco.gauge));
                 info.put("traction", locoDef.getStartingTractionNewtons(loco.gauge));
                 info.put("max_speed", locoDef.getMaxSpeed(loco.gauge).metric());
-                info.put("brake", loco.getTrainBrake());
-                info.put("train_brake", loco.getTrainBrake());
+                info.put("brake", loco.getTrainBrakePos()); // TODO change?
+                info.put("train_brake", loco.getTrainBrakePos());
                 info.put("throttle", loco.getThrottle());
                 info.put("reverser", loco.getReverser());
-                info.put("sanding", loco.isSanding());
+                info.put("sanding", loco.isSanding);
 
                 if (loco instanceof LocomotiveSteam) {
                     LocomotiveSteam steam = (LocomotiveSteam) loco;
