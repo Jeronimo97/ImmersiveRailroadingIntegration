@@ -4,7 +4,6 @@ import cam72cam.immersiverailroading.Config;
 import cam72cam.immersiverailroading.IRItems;
 import cam72cam.immersiverailroading.entity.Locomotive;
 import cam72cam.immersiverailroading.items.ItemRadioCtrlCard;
-import cam72cam.immersiverailroading.library.Augment;
 import cam72cam.immersiverailroading.thirdparty.CommonAPI;
 import cam72cam.mod.math.Vec3d;
 import cam72cam.mod.math.Vec3i;
