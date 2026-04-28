@@ -7,6 +7,7 @@ import cam72cam.mod.item.ItemStack;
 //import mods.railcraft.common.items.RailcraftItems;
 
 public class Railcraft {
+    @SuppressWarnings("deprecation")
     public static void init() {
         /*
         IRFuzzy.IR_TIE.add(new ItemStack(new net.minecraft.item.ItemStack(
