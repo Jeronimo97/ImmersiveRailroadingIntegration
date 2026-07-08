@@ -15,34 +15,25 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class ComputerCraft {
     public static void init() {
-        ComputerCraftAPI.registerPeripheralProvider(new IPeripheralProvider() {
-            @Nullable
-            @Override
-            public LazyOptional<IPeripheral> getPeripheral(@Nonnull World world, @Nonnull BlockPos blockPos, @Nonnull Direction enumFacing) {
-                TileRailBase rail = cam72cam.mod.world.World.get(world).getBlockEntity(new Vec3i(blockPos), TileRailBase.class);
-                if (rail != null) {
-                    if (rail.getAugment() == Augment.DETECTOR) {
-                        return LazyOptional.of(() -> new DetectorPeripheral(world, blockPos));
-                    }
-                    if (rail.getAugment() == Augment.LOCO_CONTROL) {
-                        return LazyOptional.of(() -> new LocoControlPeripheral(world, blockPos));
-                    }
+        ComputerCraftAPI.registerPeripheralProvider((world, blockPos, direction) -> {
+            TileRailBase rail = cam72cam.mod.world.World.get(world).getBlockEntity(new Vec3i(blockPos), TileRailBase.class);
+            if (rail != null) {
+                if (rail.getAugment() == Augment.DETECTOR) {
+                    return LazyOptional.of(() -> new DetectorPeripheral(world, blockPos));
                 }
-                return LazyOptional.empty();
+                if (rail.getAugment() == Augment.LOCO_CONTROL) {
+                    return LazyOptional.of(() -> new LocoControlPeripheral(world, blockPos));
+                }
             }
+            return LazyOptional.empty();
         });
 
         CommonEvents.World.TICK.subscribe(TickHandler::onWorldTick);
@@ -56,7 +47,7 @@ public class ComputerCraft {
     public static class TickHandler {
         private static final Map<BasePeripheral, Set<IComputerAccess>> tickable = new HashMap<>();
 
-        public static void onWorldTick(World world) {
+        public static void onWorldTick(Level world) {
             synchronized (tickable) {
                 tickable.forEach((peripheral, computers) -> {
                     if (!world.isClientSide && peripheral.world == world) {
@@ -88,7 +79,7 @@ public class ComputerCraft {
     }
 
     private static abstract class BasePeripheral implements IDynamicPeripheral {
-        private final World world;
+        private final Level world;
         private final BlockPos pos;
         private final String[] fnNames;
         private final APICall[] fnImpls;
@@ -96,7 +87,7 @@ public class ComputerCraft {
         private UUID wasOverhead;
         protected Class<? extends EntityRollingStock> typeFilter = EntityRollingStock.class;
 
-        public BasePeripheral(World world, BlockPos blockPos, LinkedHashMap<String, APICall> methods) {
+        public BasePeripheral(Level world, BlockPos blockPos, LinkedHashMap<String, APICall> methods) {
             this.world = world;
             this.pos = blockPos;
             this.api = CommonAPI.create(world, pos);
@@ -106,7 +97,7 @@ public class ComputerCraft {
         }
 
         public void update(Set<IComputerAccess> computers) {
-            if (computers.size() > 0) {
+            if (!computers.isEmpty()) {
                 TileRailBase te = cam72cam.mod.world.World.get(world).getBlockEntity(new Vec3i(pos), TileRailBase.class);
                 EntityRollingStock nearby = te.getStockNearBy(typeFilter);
                 UUID isOverhead = nearby != null ? nearby.getUUID() : null;
@@ -121,25 +112,24 @@ public class ComputerCraft {
         }
 
         @Override
-        public void attach(@Nonnull IComputerAccess computer) {
+        public void attach(IComputerAccess computer) {
             TickHandler.attach(this, computer);
         }
 
         @Override
-        public void detach(@Nonnull IComputerAccess computer) {
+        public void detach(IComputerAccess computer) {
             TickHandler.detach(this, computer);
         }
 
 
-        @Nonnull
         @Override
         public String[] getMethodNames() {
             return fnNames;
         }
 
-        @Nullable
+        
         @Override
-        public MethodResult callMethod(@Nonnull IComputerAccess iComputerAccess, @Nonnull ILuaContext iLuaContext, int i, @Nonnull IArguments objects) {
+        public MethodResult callMethod(IComputerAccess iComputerAccess, ILuaContext iLuaContext, int i, IArguments objects) {
             try {
                 if (api != null && i < fnImpls.length) {
                     return MethodResult.of(fnImpls[i].apply(api, objects.getAll()));
@@ -151,7 +141,7 @@ public class ComputerCraft {
         }
 
         @Override
-        public boolean equals(@Nullable IPeripheral iPeripheral) {
+        public boolean equals( IPeripheral iPeripheral) {
             return iPeripheral == this;
         }
     }
@@ -193,11 +183,11 @@ public class ComputerCraft {
             });
         }
 
-        public DetectorPeripheral(World world, BlockPos blockPos) {
+        public DetectorPeripheral(Level world, BlockPos blockPos) {
             super(world, blockPos, methods);
         }
 
-        @Nonnull
+        
         @Override
         public String getType() {
             return "ir_augment_detector";
@@ -255,12 +245,12 @@ public class ComputerCraft {
             });
         }
 
-        public LocoControlPeripheral(World world, BlockPos blockPos) {
+        public LocoControlPeripheral(Level world, BlockPos blockPos) {
             super(world, blockPos, methods);
             typeFilter = Locomotive.class;
         }
 
-        @Nonnull
+        
         @Override
         public String getType() {
             return "ir_augment_control";
